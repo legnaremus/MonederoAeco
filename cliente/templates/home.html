@@ -1,0 +1,63 @@
+<div ng-if = "login_ok">
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+      <a class="navbar-brand" href="#/home">Monedero</a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      	<ul class="nav navbar-nav">
+        	<li class="active"><a href="#">Inicio</a></li>
+					<li><a href="#/altas">Altas</a></li>
+					<li><a href="#/bajas">Bajas</a></li>
+					<li><a href="#/registros">Registros</a></li>
+					<li><a href="#/usuarios">Usuarios</a></li>
+					<li><a href="#/sucursales">Sucursales</a></li>
+					<li><a href="#/promociones">Promociones</a></li>
+					<li><a href="#/configuraciones">Configuraciones</a></li>
+				</ul>
+			</div>		
+		</div>
+	</nav>
+	<div ng-if = "message_error" class="alert alert-danger alert-dismissible" role="alert" style="text-align:center">
+	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <strong id='errores' >{{message_error}}</strong>
+	</div>
+	<div ng-if = "message_ok" class="alert alert-success alert-dismissible" role="alert" style="text-align:center">
+	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <strong id='correctos' >{{message_ok}}</strong>
+	</div>
+  <div class="page-header"> <h1>Bienvenido</h1> </div>
+  <div class="col-sm-6 col-sm-offset-3 form">
+  	<div class="form-group">
+		 	<label for="id_monedero">Id monedero:</label>
+			<input type = "text" ng-model = "monedero.id_monedero" ng-change = "obten_persona_monedero()" id = "id_monedero" placeholder = "monedero" class="form-control" />
+		</div>
+		<div id="nomMon" ng-if = "datos_ok">
+			Propietario: {{apellido_pat + ' ' + apellido_mat + ' ' + nombre}}
+				<br>Monto disponible: {{monto}}
+ 		</div>
+		<div class="form-group">
+		 	<label for="monto">Monto:</label>
+			<input id = "monto" type = "text" class="form-control" ng-change = "limpia_mensaje()" ng-model = "monedero.monto" placeholder = "monto" />
+	  </div>  
+		<div class="form-group">
+	 	<label for="promocion">Promoción:</label>
+	    <select id = "promocion" ng-change = "obten_promocion()" class="form-control" ng-model="promociones.select">
+	      <option  ng-repeat="option in promociones.data" value="{{option.id_promocion}}">{{option.descripcion}}</option>
+	    </select>
+		</div>
+		<div ng-if = "promo_seleccionada.porcentaje && monedero.monto" id='infoPorc'>
+			Monto a agregar aplicando el {{promo_seleccionada.porcentaje}}% <br>
+			${{(monedero.monto * (promo_seleccionada.porcentaje / 100))}}
+		</div>
+		<button class="btn btn-success" style="font-size:1.5em" ng-click ="agrega()" > + </button> 
+		<button class="btn btn-warning" style="font-size:1.5em" ng-click ="quita()" > - </button>
+	</div>
+
+</div>

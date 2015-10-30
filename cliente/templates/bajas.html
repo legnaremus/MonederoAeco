@@ -1,0 +1,45 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#/home">Monedero</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="#/home">Inicio</a></li>
+        <li><a href="#/altas">Altas</a></li>
+        <li class="active"><a href="#/bajas">Bajas</a></li>
+        <li><a href="#/registros">Registros</a></li>
+        <li><a href="#/usuarios">Usuarios</a></li>
+        <li><a href="#/sucursales">Sucursales</a></li>
+        <li><a href="#/promociones">Promociones</a></li>
+        <li><a href="#/configuraciones">Configuraciones</a></li>
+      </ul>
+    </div>    
+  </div>
+</nav>
+<div ng-if = "message_error" class="alert alert-danger alert-dismissible" role="alert" style="text-align:center">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong id='errores' >{{message_error}}</strong>
+</div>
+<div ng-if = "message_ok" class="alert alert-success alert-dismissible" role="alert" style="text-align:center">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong id='correctos' >{{message_ok}}</strong>
+</div>
+<div class="page-header"><h1>Baja de monedero electronico </h1></div>
+<div class="col-sm-6 col-sm-offset-3 form">
+  <div class="form-group">
+    <label for="id_monedero">Id del monedero: </label>
+    <input id = "id_monedero" class="form-control" type = "text" ng-model = "id_monedero" placeholder = "id_monedero" />
+  </div>
+  <div class="form-group">
+    <label for="contrasenia">Contraseña: </label>
+    <input id = "contrasenia" class="form-control" type = "text" ng-model = "contrasenia" placeholder = "contrasenia" />
+  </div>
+  <button class="btn btn-info" ng-click = "desactivar()">Desactivar </button>
+</div>

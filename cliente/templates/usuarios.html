@@ -1,0 +1,51 @@
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+      <a class="navbar-brand" href="#/home">Monedero</a>
+		</div>
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+  		<ul class="nav navbar-nav">
+    		<li ><a href="#/home">Inicio</a></li>
+			<li><a href="#/altas">Altas</a></li>
+			<li><a href="#/bajas">Bajas</a></li>
+			<li><a href="#/registros">Registros</a></li>
+			<li class="active"><a href="#/usuarios">Usuarios</a></li>
+			<li><a href="#/sucursales">Sucursales</a></li>
+			<li><a href="#/promociones">Promociones</a></li>
+			<li><a href="#/configuraciones">Configuraciones</a></li>
+			</ul>
+		</div>		
+	</div>
+</nav>
+<div class="page-header"><h1>Usuarios</h1></div>
+<div class="col-sm-6 col-sm-offset-3 form">
+	<div class="form-group">
+		<label for="nombre">Nombre del usuario:</label>
+		<input class="form-control" id = "nombre" type = "text" ng-model = "persona.nombre" placeholder = "nombre" />
+	</div>
+	<div class="form-group">
+		<label for="apellido">Apellido del usuario:</label>
+		<input class="form-control" id = "apellido" type = "text" ng-model = "persona.apellido" placeholder = "apellido" />
+	</div>
+	<div class="form-group">
+		<label for="contrasenia">Contrasenia del usuario:</label>
+		<input class="form-control" id = "contrasenia" type = "text" ng-model = "persona.contrasenia" placeholder = "Contraseña del usuario" />
+	</div>
+	<div class="form-group">
+		<label for="verifica">Verifica la contraseña:</label>
+		<input class="form-control" id = "verifica" type = "text" ng-model = "persona.verifica" placeholder = "Verifica la contraseña" />
+	</div>
+	<div class="form-group">
+		<label for="contrasenia_administrador">Contrasenia del administrador:</label>
+		<input class="form-control" id = "contrasenia_administrador" type = "text" ng-model = "persona.contrasenia_administrador" placeholder = "Contraseña del usuario" /><br>
+	</div>
+	<div class="form-group" style="text-align:right">
+		<button class="btn btn-info"  ng-click = "activar()"> Agregar </button>
+	</div>
+</div>

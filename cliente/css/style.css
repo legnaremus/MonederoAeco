@@ -1,0 +1,35 @@
+.alert{
+	text-align: center;
+	margin: -10px 15px;
+}
+.page-header,.form{
+	text-align: center;
+}
+.form{
+	background: #6689B0;
+	padding:30px 30px 15px;
+	color: white;
+	margin-bottom: 20px;
+}
+#nomMon{
+	background: #E0E8F1;
+	color: #6689B0;
+	border-radius: 8px;
+	padding: 5px;
+	margin-top: -10px;
+	margin-bottom: 10px;
+}
+#infoPorc{
+	background: #E0E8F1;
+	color: #6689B0;
+	border-radius: 8px;
+	padding: 5px;
+	margin-top: -10px;
+	margin-bottom: 10px;
+}
+label{
+	font-size: 1.3em;
+}
+.form-control{
+	color: #6689B0;
+}
