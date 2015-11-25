@@ -1,11 +1,17 @@
 var app = angular.module("monedero",['controllers','services','ngRoute']);
 
-
+app.run(function(){
+	console.log("app run");
+});	
 app.config(function($routeProvider){
 
 	$routeProvider.when('/',{
 		controller: 'mainCtrl',
 		templateUrl: 'templates/login.html'
+	})
+	$routeProvider.when('/alertas',{
+		controller: 'alertasCtrl',
+		templateUrl: 'templates/alertas.html'
 	})
 	$routeProvider.when('/home',{
 		controller: 'homeCtrl',
@@ -36,8 +42,12 @@ app.config(function($routeProvider){
 		templateUrl: 'templates/promociones.html'
 	})
 	$routeProvider.when('/configuraciones',{
-		controller: 'promocionesCtrl',
+		controller: 'configuracionesCtrl',
 		templateUrl: 'templates/configuraciones.html'
+	})
+	$routeProvider.when('/configuraciones/parametros',{
+		controller: 'alertaCtrl',
+		templateUrl: 'templates/parametros.html'
 	})
 	.otherwise('/');
 });

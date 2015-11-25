@@ -1,0 +1,12 @@
+
+<h1> Configuraciones </h1>
+<h3> Parametros de alerta </h3>
+
+<br>
+<h3> Escriba el parametro de alerta para la sucursal </h3><br>
+
+<input type = "text" ng-model = "parametro" /><br>
+<button ng-click = "guardar_parametro()"> Guardar parametro </button>
+
+<p class="text-error" ng-if = "message_error">{{message_error}}</p>
+<p class="text-success" ng-if = "message_ok">{{message_ok}}</p>

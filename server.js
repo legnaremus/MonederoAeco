@@ -5,13 +5,13 @@
 
   var server = restify.createServer();
 
-  var conString = "postgres://postgres:samael@localhost:5432/Monedero";
+  var conString = "postgres://postgres:samael@localhost/Monedero";
 
 	var client_v;
 
 	var elementos_por_pagina = 150;
 
-  var tiempo_login = 12;
+  var tiempo_login = 10;
 
   var llaves = function(){
     var este = this;
@@ -21,12 +21,13 @@
     };
     este.existe_llave  = function(llave){
       for (i = 0; i < llaves_arreglo.length; i++){
-        //console.log('comparando ' + llave + ' con ' + llaves_arreglo[i].llave );
+        
         if (llaves_arreglo[i].llave == llave){
+          llaves_arreglo[i].contador = 0;
           return llaves_arreglo[i];
         }
       }
-      return 'null';
+      return null;
     };
     este.borra_llave = function(llave){
       for (i = 0; i < llaves_arreglo.length;i++){
@@ -52,7 +53,7 @@ function genera_llave()
     return text;
 }
 
-	var llave = function(llave,id_usuario,nombre_sucursal,password,id_sucursal){
+	var llave = function(llave,id_usuario,nombre_sucursal,password,id_sucursal,id_negocio){
 		var este = this;
 		este.llave = llave;
     este.contador = 0;
@@ -60,6 +61,7 @@ function genera_llave()
     este.nombre_sucursal = nombre_sucursal;
     este.password = password;
     este.id_usuario = id_usuario;
+    este.id_negocio = id_negocio;
 		este.intervalo = setInterval(function(){
       console.log("interval " + este.contador  + " " + este.llave);
 			este.contador++;
@@ -139,8 +141,11 @@ function genera_llave()
               
                 query_final = query_final.replace('!email!',req.params['email']);
             }
-
-            query_final = limpia_query(query_final,['nombre','apellido_pat','apellido_mat','telefono','email']);
+            if (req.params['fecha_nacimiento']){
+              
+                query_final = query_final.replace('!fecha_nacimiento!',req.params['fecha_nacimiento']);
+            }
+            query_final = limpia_query(query_final,['nombre','apellido_pat','apellido_mat','telefono','email','fecha_nacimiento']);
             
             console.log(req.params);
 
@@ -149,7 +154,7 @@ function genera_llave()
 
               var id_persona = todos[0].id_persona;
 
-              var query2 = 'INSERT INTO "Monedero"(id_monedero,id_persona_cliente, fecha_activacion, id_sucursal, monto) VALUES (!id_monedero!,!id_persona!,'   + "'" +  new Date()+ "'"  +', !id_sucursal!, 0 )';
+              var query2 = 'INSERT INTO "Monedero"(id_monedero,id_persona_cliente, fecha_activacion, id_sucursal, monto,estado_activado) VALUES (!id_monedero!,!id_persona!,'   + "'" +  new Date()+ "'"  +', !id_sucursal!, 0 ,1)';
               query2 = query2.replace('!id_persona!',id_persona);
               query2 = query2.replace('!id_sucursal!',sucursal.id_sucursal);
               query2 = query2.replace('!id_monedero!', req.params['id_monedero']);
@@ -346,20 +351,52 @@ function genera_llave()
 
             if (req.params['monto']){
 
-              var query2 = 'INSERT INTO "Transaccion"(id_monedero, id_sucursal, id_usuario, fecha_transaccion, monto) VALUES(!id!, !id_sucursal!, !id_usuario!,'  + "'" +  new Date()+ "'" + ' , !monto!)';
-                            
-              query2 = query2.replace('!id!',req.params['id']);
-              query2 = query2.replace('!id_sucursal!',sucursal.id_sucursal);
-              query2 = query2.replace('!id_usuario!',sucursal.id_usuario);
-              query2 = query2.replace('!monto!',req.params['monto']);
+              query3 = 'select parametro_alerta from "Sucursal" where "Sucursal".id_sucursal = !id_sucursal!';
+              query3 = query3.replace('!id_sucursal!',sucursal.id_sucursal); 
 
-              execute_query(query2,function(todos) {
-                res.send(todos);
-                next();
+              execute_query(query3,function(todos) {
+
+                console.log(todos);
+
+                var alerta = 0;
+
+                if (req.params['monto']>= todos[0].parametro_alerta && todos[0].parametro_alerta >0){
+                  alerta = 1;
+                  console.log("alerta");
+                }
+
+                var query2 = 'INSERT INTO "Transaccion"(id_monedero, id_sucursal, id_usuario, fecha_transaccion, monto,alerta) VALUES(!id!, !id_sucursal!, !id_usuario!,'  + "'" +  new Date()+ "'" + ' , !monto!, ' + alerta + ' ) returning id_transaccion';
+                              
+                query2 = query2.replace('!id!',req.params['id']);
+                query2 = query2.replace('!id_sucursal!',sucursal.id_sucursal);
+                query2 = query2.replace('!id_usuario!',sucursal.id_usuario);
+                query2 = query2.replace('!monto!',req.params['monto']);
+
+                execute_query(query2,function(todos){
+
+                  if (alerta == 1){
+                    var query4 = 'UPDATE "Monedero" SET estado_activado = 0  where "Monedero".id_monedero  = !id!';
+                    query4 = query4.replace('!id!',req.params['id']);
+
+                    execute_query(query4,function(todos){
+
+                      console.log(todos);
+                      res.send(todos);
+                      next();             
+
+                    });
+
+                  }else{
+                    console.log(todos);
+                    res.send(todos);
+                    next();                    
+                  }
+
+                });
+
               });
             }else{
-              console.log(req.method);
-              if (todos.length == 0 && req.method == 'GET'){
+              if (todos.length == 0 && req.method == 'GET' && !query.search("Promocion")){
                 res.send(400,'Peticion incorrecta');
                 next();
               }else{
@@ -388,7 +425,7 @@ function genera_llave()
             req.params.password = req.params.password.replace('"',"");
             req.params.password = req.params.password.replace('%',"");
 
-            query = 'Select "Usuario".id_usuario, "Sucursal".id_sucursal, "Usuario".id_usuario from "Usuario","Sucursal_admin","Sucursal" where "Usuario".id_usuario = "Sucursal_admin".id_administrador and "Sucursal".nombre_sucursal = '+ "'"+req.params.user+ "'" +' and "Usuario".password = ' +"'" +req.params.password+ "'";
+            query = 'Select "Usuario".id_usuario,"Sucursal".parametro_alerta, "Sucursal".id_negocio , "Sucursal".id_sucursal, "Usuario".id_usuario from "Usuario","Sucursal_admin","Sucursal" where "Usuario".id_usuario = "Sucursal_admin".id_administrador and "Sucursal".nombre_sucursal = '+ "'"+req.params.user+ "'" +' and "Usuario".password = ' +"'" +req.params.password+ "'";
             execute_query(query,function(todos){
               console.log(todos);
 
@@ -397,7 +434,7 @@ function genera_llave()
               }else{
                 var token = genera_llave();
 
-                new llave(token,todos[0].id_usuario,req.params.user,req.params.password,todos[0].id_sucursal);
+                new llave(token,todos[0].id_usuario,req.params.user,req.params.password,todos[0].id_sucursal,todos[0].id_negocio);
 
                 res.send(token);
                 next();
@@ -410,9 +447,264 @@ function genera_llave()
         }
     };
 
+ var parametro = function(query){
+      return function(req,res,next){
 
- 
-    return{"inserta_sucursal":inserta_sucursal, "insert_persona_monedero":insert_persona_monedero, "get_query":get_query, "login":login,"execute_query":execute_query};
+          res.setHeader('Access-Control-Allow-Origin','*');
+          res.setHeader('Access-Control-Allow-Methods', '*');
+
+          var query_final = "";
+
+          var llave =  req.headers['x-auth-token'] || '';
+
+          var sucursal = llaves_existentes.existe_llave(llave);
+
+
+          if (sucursal == null){
+
+              console.log("llave no existe");
+              res.send(401,"No autorizado");
+              next();
+              return;
+          }else{
+
+            if (req.params['password']){
+              if (req.params['password'] != sucursal.password){
+                  res.send(402,"No autorizado");
+                  return;
+                  next(); 
+              }
+            }
+          }
+
+          query_final = query;
+          console.log(sucursal.id_negocio);
+
+
+          if (req.method == 'POST'){
+
+            console.log(req.params);
+
+            o = JSON.parse(Object.keys(req.params)[1]);
+
+            console.log(o);
+
+            if (o.nombre != undefined) query_final = query_final.replace('!nombre!',o.nombre);
+
+            if (o.apellido_pat != undefined) query_final = query_final.replace('!apellido_pat!',o.apellido_pat);
+            
+            if (o.id_persona != undefined) query_final = query_final.replace('!id_persona!',o.id_persona);
+            if (o.id_sucursal != undefined) query_final = query_final.replace('!id_sucursal!',o.id_sucursal);
+            if (o.nombre_sucursal != undefined) query_final = query_final.replace('!nombre_sucursal!',o.nombre_sucursal);
+            if (o.direccion != undefined) query_final = query_final.replace('!direccion!',o.direccion);
+            if (o.descripcion != undefined) query_final = query_final.replace('!descripcion!',o.descripcion);
+            if (o.porcentaje != undefined) query_final = query_final.replace('!porcentaje!',o.porcentaje);
+            if (o.id_promocion != undefined) query_final = query_final.replace('!id_promocion!',o.id_promocion);
+
+          }else{
+
+            query_final = query_final.replace('!id_sucursal!',sucursal.id_sucursal);
+            query_final = query_final.replace('!id_negocio!',sucursal.id_negocio);
+          }
+          if (req.params['id_promocion']){
+            query_final = query_final.replace('!id_promocion!',req.params['id_promocion']);
+          }          
+          if (req.params['id_sucursal']){
+            query_final = query_final.replace('!id_sucursal_!',req.params['id_sucursal']);
+          }
+
+          if (req.params['id_usuario']){
+            query_final = query_final.replace('!id_usuario!',req.params['id_usuario']);
+          }
+
+          if (req.params['parametro']){
+            query_final = query_final.replace('!parametro!',req.params['parametro']);
+          }
+
+          execute_query(query_final,function(todos){
+
+
+            if (req.method == 'POST' && o.nombre != undefined && o.porcentaje == undefined){
+
+              var query2 = '';
+              if (o.nombre != undefined) query2 = 'update "Usuario" set password = ' + " '!password!' where id_usuario = !id_usuario!";
+
+              if (o.password != undefined) query2 = query2.replace('!password!',o.password);
+
+              if (o.id_usuario != undefined) query2 = query2.replace('!id_usuario!',o.id_usuario);
+
+              execute_query(query2,function(todos){
+                console.log(todos);
+                res.send(todos);
+
+                next();
+              });
+
+            }else{
+              console.log(todos);
+
+              res.send(todos);
+
+              next();
+
+            }
+
+          });
+      }
+    };
+
+  var inserta_usuario = function(query){
+      return function(req,res,next){
+
+          res.setHeader('Access-Control-Allow-Origin','*');
+          res.setHeader('Access-Control-Allow-Methods', '*');
+
+          var query_final = "";
+
+          var llave =  req.headers['x-auth-token'] || '';
+
+          var sucursal = llaves_existentes.existe_llave(llave);
+
+          if (sucursal == null){
+
+              console.log("llave no existe");
+              res.send(401,"No autorizado");
+              next();
+              return;
+          }else{
+
+            if (req.params['password']){
+              if (req.params['password'] != sucursal.password){
+                  res.send(402,"No autorizado");
+                  return;
+                  next(); 
+              }
+            }
+
+          }
+
+          query_final = query;
+
+          query_final = query_final.replace('!nombre!',req.params['nombre']);
+          query_final = query_final.replace('!apellido_pat!',req.params['apellido_pat']);
+
+          execute_query(query_final,function(todos){
+
+            var query2 = 'insert into "Usuario"( tipo_usuario, password, id_persona) values (1,' +  "'!password_usuario!'" + ',!id_persona!) returning id_usuario';
+
+            query2 = query2.replace('!password_usuario!',req.params['password_usuario']);
+            
+            query2 = query2.replace('!id_persona!',todos[0].id_persona);
+
+            execute_query(query2,function(todos){
+
+              console.log(todos);
+
+              var query3 = 'insert into "Sucursal_admin"( id_sucursal, id_administrador) values (!id_sucursal!,!id_administrador!)';
+
+              query3 = query3.replace('!id_sucursal!',sucursal.id_sucursal);
+
+              query3 = query3.replace('!id_administrador!',todos[0].id_usuario);
+
+              execute_query(query3,function(todos){
+                res.send(todos);
+
+                next();
+              });
+
+
+            });
+
+
+          });
+      }
+    };
+
+  var check = function(){
+      return function(req,res,next){
+
+          var query_final = "";
+
+          var llave =  req.headers['x-auth-token'] || '';
+
+          var sucursal = llaves_existentes.existe_llave(llave);
+
+          if (sucursal == null){
+
+              console.log("llave no existe");
+              res.send(401,"No autorizado");
+              next();
+              return;
+          }else{
+
+            res.send(200);
+            next();
+          }
+
+      }
+    };
+
+  var activa = function(){
+      return function(req,res,next){
+
+          var query_final = "";
+
+          var llave =  req.headers['x-auth-token'] || '';
+
+          var sucursal = llaves_existentes.existe_llave(llave);
+
+          console.log(req.params);
+
+          if (sucursal == null){
+              console.log("llave no existe");
+              res.send(401,"No autorizado");
+              next();
+              return;
+          }else{
+
+            if (req.params['password']){
+              if (req.params['password'] != sucursal.password){
+                  res.send(402,"No autorizado");
+                  next(); 
+                  return;
+              }
+            }
+
+          var partes = req.params['ids'].split(',');
+          var buff = '';
+          var buff2= '';
+          for (i = 0;i < partes.length -1;i++){
+            buff+= '"Monedero".id_monedero = ' + partes[i];
+            buff2+= '"Transaccion".id_monedero = ' + partes[i];
+            if (i != (partes.length -2)){
+              buff2 +=  ' or ';
+              buff +=  ' or ';
+            }
+          }
+
+          var query = 'UPDATE "Monedero" SET estado_activado = 1 where ' + buff;
+
+          execute_query(query,function(todos){
+
+            var query2 = 'UPDATE "Transaccion" SET alerta = 0 where ' + buff2;
+
+            execute_query(query2,function(todos){
+
+              console.log(todos);
+              res.send(200);
+              next();
+
+            });
+
+
+          });
+
+          }
+
+
+      }
+    };
+    return{"activa":activa, "check":check, "inserta_usuario":inserta_usuario, "parametro":parametro, "inserta_sucursal":inserta_sucursal, "insert_persona_monedero":insert_persona_monedero, "get_query":get_query, "login":login,"execute_query":execute_query};
  
   }();
 
@@ -431,6 +723,24 @@ server.use(restify.bodyParser());
 server.use(restify.authorizationParser());
 server.use(restify.CORS());
 
+
+var recurso_usuario = function(){
+
+  var query = 'insert into "Persona" (nombre,apellido_pat) VALUES ' + "('!nombre!','!apellido_pat!') returning id_persona";
+
+  server.post('/usuario/:nombre/:apellido_pat/:password_usuario/:password',data_base.inserta_usuario(query));
+
+};
+
+var recurso_parametro_alerta = function(){
+
+  var query = 'select parametro_alerta from "Sucursal" where "Sucursal".id_sucursal = !id_sucursal!';
+  var query2 = 'update "Sucursal" set  parametro_alerta =  !parametro!  where "Sucursal".id_sucursal = !id_sucursal!';
+
+  server.get('/parametro/obten'  , data_base.parametro(query));
+  server.get('/parametro/:parametro/'  , data_base.parametro(query2));
+
+}
 
 var genera_recurso_login = function(){
 
@@ -454,7 +764,6 @@ var recurso_inserta_promociones = function(){
 };
 
 var recurso_promociones = function(){
-    // select "Persona".apellido_pat,"Persona".apellido_mat,"Persona".nombre,"Monedero".monto from "Monedero","Sucursal","Persona" where "Monedero".id_sucursal = "Sucursal".id_sucursal and "Monedero".id_monedero = !id! and "Sucursal".nombre_sucursal = 'mi_sucursal' and "Persona".id_persona = "Monedero".id_persona_cliente
 
   var query = 'select * from "Promocion","Sucursal" where "Promocion".id_sucursal = "Sucursal".id_sucursal and "Sucursal".nombre_sucursal = ' + "'!nombre_sucursal!'";
 
@@ -467,14 +776,14 @@ var recurso_promociones = function(){
 var recurso_persona_monedero = function(){
 
 
-  var query = 'insert into "Persona" (nombre,apellido_pat,apellido_mat,telefono,email) VALUES ' + "('!nombre!','!apellido_pat!','!apellido_mat!','!telefono!','!email!') returning id_persona";
-  server.get('/persona/:nombre/:apellido_pat/:apellido_mat/:telefono/:email/:id_monedero', data_base.insert_persona_monedero(query));
+  var query = 'insert into "Persona" (nombre,apellido_pat,apellido_mat,telefono,email,fecha_nacimiento) VALUES ' + "('!nombre!','!apellido_pat!','!apellido_mat!','!telefono!','!email!','!fecha_nacimiento!') returning id_persona";
+  server.get('/persona/:nombre/:apellido_pat/:apellido_mat/:telefono/:email/:fecha_nacimiento/:id_monedero', data_base.insert_persona_monedero(query));
 
 };
 
 var recurso_monedero_baja = function(){
 
-  var query = 'UPDATE "Monedero" SET estado_activado = 0 from "Sucursal","Persona" where "Monedero".id_sucursal = "Sucursal".id_sucursal and "Monedero".id_monedero = !id! and "Sucursal".nombre_sucursal = ' +  "'!nombre_sucursal!'" + ' and "Persona".id_persona = "Monedero".id_persona_cliente returning estado_activado';
+  var query = 'UPDATE "Monedero" SET estado_activado = 0 from "Sucursal","Persona" where "Monedero".id_sucursal = "Sucursal".id_sucursal and "Monedero".id_monedero = !id! and "Sucursal".nombre_sucursal = ' +  "'!nombre_sucursal!'" + ' and "Persona".id_persona = "Monedero".id_persona_cliente and "Monedero".estado_activado = 1 returning estado_activado';
 
   server.get('/bajamonedero/:id', data_base.get_query(query));
   server.get('/bajamonedero/:id/:password', data_base.get_query(query));
@@ -490,7 +799,7 @@ var recurso_transacciones = function () {
 var recurso_monedero = function(){
 
 
-  var query = 'select "Persona".apellido_pat,"Persona".apellido_mat,"Persona".nombre,"Monedero".monto from "Monedero","Sucursal","Persona" where "Monedero".id_sucursal = "Sucursal".id_sucursal and "Monedero".id_monedero = !id! and "Sucursal".nombre_sucursal = ' +  "'!nombre_sucursal!'" + ' and "Persona".id_persona = "Monedero".id_persona_cliente';
+  var query = 'select "Persona".apellido_pat,"Persona".apellido_mat,"Persona".nombre,"Monedero".monto, "Monedero".estado_activado from "Monedero","Sucursal","Persona" where "Monedero".id_sucursal = "Sucursal".id_sucursal and "Monedero".id_monedero = !id! and "Sucursal".nombre_sucursal = ' +  "'!nombre_sucursal!'" + ' and "Persona".id_persona = "Monedero".id_persona_cliente';
 
   server.get('/monedero/:id', data_base.get_query(query));
 
@@ -500,7 +809,83 @@ var recurso_monedero = function(){
 
 };
 
+var recurso_alerta = function(){
+  var query = 'select * from "Transaccion" where "Transaccion".id_sucursal = !id_sucursal! and "Transaccion".alerta = 1';
+  server.get('/alertas/:s', data_base.parametro(query));
 
+};
+
+var recurso_check = function(){
+
+  server.get('/check/:c',data_base.check());
+};
+
+
+var recurso_monedero_activa = function(){
+  server.post('/activa/:password/:ids',data_base.activa());
+}
+
+var recurso_usuarios = function(){
+  var query = 'select * from "Sucursal_admin","Usuario","Persona" where "Sucursal_admin".id_administrador = "Usuario".id_usuario and "Sucursal_admin".id_sucursal = !id_sucursal! and "Usuario".id_persona = "Persona".id_persona';
+  server.get('/usuarios',data_base.parametro(query));
+}
+
+var recurso_modifica_usuario = function(){  //!nombre! !apellido_pat! !id_persona!
+
+  var query = 'update "Persona" set nombre =  ' + "'!nombre!',apellido_pat = '!apellido_pat!' where " + '"Persona".id_persona = !id_persona!' ;
+  server.post('/usuarios/:password',data_base.parametro(query));
+
+}
+
+var recurso_elimina_usuario = function(){
+  var query = 'delete from "Usuario" where "Usuario".id_usuario  =  !id_usuario!';
+  server.get('/delete_user/:id_usuario/:password',data_base.parametro(query));
+
+};
+
+var recurso_sucursales = function(){
+  var query = 'select * from "Sucursal","Negocio" where "Sucursal".id_negocio = "Negocio".id_negocio and "Sucursal".id_negocio = !id_negocio!'
+  server.get('/sucursales',data_base.parametro(query));
+}
+
+var recurso_modifica_sucursales = function(){  //!nombre! !apellido_pat! !id_persona!
+
+  var query = 'update "Sucursal" set nombre_sucursal =  ' + "'!nombre_sucursal!',direccion = '!direccion!' where " + '"Sucursal".id_sucursal = !id_sucursal!' ;
+  server.post('/sucursales/:password',data_base.parametro(query));
+
+}
+
+var recurso_elimina_sucursal = function(){
+  var query = 'delete from "Sucursal" where "Sucursal".id_sucursal  =  !id_sucursal_!';
+  server.get('/delete_sucursal/:id_sucursal/:password',data_base.parametro(query));
+
+};
+
+var recurso_modifica_promociones = function(){  //!nombre! !apellido_pat! !id_persona!
+
+  var query = 'update "Promocion" set nombre =  ' + "'!nombre!',descripcion = '!descripcion!',porcentaje = !porcentaje! where " + '"Promocion".id_promocion = !id_promocion!' ;
+  
+  server.post('/promociones/:password',data_base.parametro(query));
+
+};
+
+var recurso_elimina_promocion = function(){
+  var query = 'delete from "Promocion" where "Promocion".id_promocion  =  !id_promocion!';
+  server.get('/delete_promo/:id_promocion/:password',data_base.parametro(query));
+
+};
+
+recurso_elimina_promocion();
+recurso_modifica_promociones();
+recurso_elimina_sucursal();
+recurso_modifica_sucursales();
+recurso_sucursales();
+recurso_elimina_usuario();
+recurso_modifica_usuario();
+recurso_usuarios();
+recurso_monedero_activa();
+recurso_check();
+recurso_alerta();
 genera_recurso_login();
 recurso_promociones();
 recurso_monedero();
@@ -509,6 +894,8 @@ recurso_monedero_baja();
 recurso_transacciones();
 recurso_sucursal();
 recurso_inserta_promociones();
+recurso_parametro_alerta();
+recurso_usuario();
 
 function corsHandler(req, res, next) {
 

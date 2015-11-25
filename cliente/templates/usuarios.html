@@ -1,51 +1,85 @@
-<nav class="navbar navbar-default">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
-      <a class="navbar-brand" href="#/home">Monedero</a>
-		</div>
-		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-  		<ul class="nav navbar-nav">
-    		<li ><a href="#/home">Inicio</a></li>
-			<li><a href="#/altas">Altas</a></li>
-			<li><a href="#/bajas">Bajas</a></li>
-			<li><a href="#/registros">Registros</a></li>
-			<li class="active"><a href="#/usuarios">Usuarios</a></li>
-			<li><a href="#/sucursales">Sucursales</a></li>
-			<li><a href="#/promociones">Promociones</a></li>
-			<li><a href="#/configuraciones">Configuraciones</a></li>
-			</ul>
-		</div>		
-	</div>
-</nav>
-<div class="page-header"><h1>Usuarios</h1></div>
-<div class="col-sm-6 col-sm-offset-3 form">
-	<div class="form-group">
-		<label for="nombre">Nombre del usuario:</label>
-		<input class="form-control" id = "nombre" type = "text" ng-model = "persona.nombre" placeholder = "nombre" />
-	</div>
-	<div class="form-group">
-		<label for="apellido">Apellido del usuario:</label>
-		<input class="form-control" id = "apellido" type = "text" ng-model = "persona.apellido" placeholder = "apellido" />
-	</div>
-	<div class="form-group">
-		<label for="contrasenia">Contrasenia del usuario:</label>
-		<input class="form-control" id = "contrasenia" type = "text" ng-model = "persona.contrasenia" placeholder = "Contraseña del usuario" />
-	</div>
-	<div class="form-group">
-		<label for="verifica">Verifica la contraseña:</label>
-		<input class="form-control" id = "verifica" type = "text" ng-model = "persona.verifica" placeholder = "Verifica la contraseña" />
-	</div>
-	<div class="form-group">
-		<label for="contrasenia_administrador">Contrasenia del administrador:</label>
-		<input class="form-control" id = "contrasenia_administrador" type = "text" ng-model = "persona.contrasenia_administrador" placeholder = "Contraseña del usuario" /><br>
-	</div>
-	<div class="form-group" style="text-align:right">
-		<button class="btn btn-info"  ng-click = "activar()"> Agregar </button>
-	</div>
+
+<h1> Usuarios </h1>
+
+<div ng-hide = "muestra_info_ok">
+
+	<label for="nombre">Nombre del usuario:</label>
+
+	<input id = "nombre" type = "text" ng-model = "persona.nombre" placeholder = "nombre" /><br>
+
+	<label for="apellido">Apellido del usuario:</label>
+
+	<input id = "apellido" type = "text" ng-model = "persona.apellido" placeholder = "apellido" /><br>
+
+	<label for="contrasenia">Contrasenia del usuario:</label>
+
+	<input id = "contrasenia" type = "text" ng-model = "persona.password" placeholder = "Contraseña del usuario" /><br>
+
+	<label for="verifica">Verifica la contraseña:</label>
+
+	<input id = "verifica" type = "text" ng-model = "persona.verifica" placeholder = "Verifica la contraseña" /><br>
+
+	<label for="contrasenia_usuario">Contrasenia de usuario actual:</label>
+
+	<input id = "contrasenia_usuario" type = "text" ng-model = "contrasenia_usuario" placeholder = "Contraseña del usuario" /><br>
+
+	<button ng-click = "registrar_usuario()"> Registrar usuario </button>
+
 </div>
+
+<div ng-show = "muestra_info_ok">
+
+	<label for="nombre">Nombre del usuario:</label>
+
+	<input id = "nombre" type = "text" ng-model = "usuario_editando.nombre" placeholder = "nombre" /><br>
+
+	<label for="apellido">Apellido del usuario:</label>
+
+	<input id = "apellido" type = "text" ng-model = "usuario_editando.apellido_pat" placeholder = "apellido" /><br>
+
+	<label for="contrasenia">Contrasenia del usuario:</label>
+
+	<input id = "contrasenia" type = "text" ng-model = "usuario_editando.password" placeholder = "Contraseña del usuario" /><br>
+
+
+	<label for="contrasenia_usuario">Contrasenia de usuario actual:</label>
+
+	<input id = "contrasenia_usuario" type = "text" ng-model = "contrasenia_usuario" placeholder = "Contraseña del usuario" /><br>
+
+	<button ng-click = "guardar_cambios()"> Guardar cambios </button>
+
+	<button ng-click = "eliminar_usuario()"> Eliminar usuario </button>
+
+	<button ng-click = "cancelar()"> Cancelar </button>
+
+</div>
+
+
+<br>
+
+<p class="text-error" ng-if = "message_error">{{message_error}}</p>
+<p class="text-success" ng-if = "message_ok">{{message_ok}}</p>
+
+<br>
+
+<table class="table table-condensed">
+ 
+	<thead>
+		<tr>
+		<th scope="col">Id</th>
+	 	<th scope="col">Nombre</th>
+		<th scope="col">Apellido</th>
+	    <th scope="col">Contraseña</th>
+	   </tr>
+	</thead>
+
+	<tbody>
+	   <tr ng-repeat = "usuario in usuarios track by $index" ng-click = "click_usuario($index)">
+				<td >{{usuario.id_usuario}}</td>
+		     	<td>{{usuario.nombre}}</td>
+				<td>{{usuario.apellido_pat}}</td>
+		     	<td>{{usuario.password}}</td>
+	   </tr>
+	</tbody>
+
+</table>

@@ -1,27 +1,42 @@
 <!DOCTYPE html>
 <html ng-app = "monedero">
   <head>
-    <title>MONEDERO</title>
+    <title>Bootstrap 101 Template</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="style.css" media="screen">
-    <link href="css/bootstrap.css" rel="stylesheet" media="screen">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="js/angular.min.js"> </script>
-    <script src = "js/angular-route.min.js">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+       <script src="js/angular.min.js"> </script>
+   <script src = "js/angular-route.min.js">
    </script>
-   <script src = "js/jquery.js"></script>
+
    <script src = "js/app.js"></script>
    <script src = "js/controllers.js"></script>
    <script src = "js/services.js"></script>
   </head>
   <body>
 
-  <div ng-view>
+    <div ng-controller = "menuCtrl">
 
-  </div>
+      <ul  class="nav nav-tabs">
 
-    <script src="http://code.jquery.com/jquery.js"></script>
+        <li ng-if = "items && location != '/' && location != ''" ng-repeat="item in items" ng-class="{active: isActive(item)}"><a href="#{{item.path}}">{{item.title}}</a></li>
+
+      </ul>
+      <div ng-if = "location != '/' && location != ''" ><center><h3>{{nombre_sucursal}}</h3> </center></div>
+
+      <div class="alert alert-block" ng-if = "alertas.length > 0 && location != '/' && location != ''">
+        <center><b><a href = "#/alertas" >Hay ({{alertas.length}}) alerta(s) sin verificar </a></b></center>
+      </div>
+
+    </div>
+    <div ng-view>
+
+    </div>
+
+    <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
   </body>
 </html>

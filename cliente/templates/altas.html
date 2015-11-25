@@ -1,68 +1,35 @@
-<nav class="navbar navbar-default">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
-      <a class="navbar-brand" href="#/home">Monedero</a>
-		</div>
-		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-  		<ul class="nav navbar-nav">
-    		<li ><a href="#/home">Inicio</a></li>
-			<li class="active"><a href="#/altas">Altas</a></li>
-			<li><a href="#/bajas">Bajas</a></li>
-			<li><a href="#/registros">Registros</a></li>
-			<li><a href="#/usuarios">Usuarios</a></li>
-			<li><a href="#/sucursales">Sucursales</a></li>
-			<li><a href="#/promociones">Promociones</a></li>
-			<li><a href="#/configuraciones">Configuraciones</a></li>
-			</ul>
-		</div>		
-	</div>
-</nav>
-<div ng-if = "message_error" class="alert alert-danger alert-dismissible" role="alert" style="text-align:center">
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-  <strong id='errores' >{{message_error}}</strong>
-</div>
-<div ng-if = "message_ok" class="alert alert-success alert-dismissible" role="alert" style="text-align:center">
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-  <strong id='correctos' >{{message_ok}}</strong>
-</div>
-<div class="page-header"><h1>Alta de monedero electronico </h1></div>
-<div class="col-sm-6 col-sm-offset-3 form" style="text-align:left">
-	<div class="form-group">
-		<label for="id_monedero">id monedero:</label>
-		<input id = "id_monedero" type = "text" ng-model = "persona.id_monedero" placeholder = "id_monedero" class="form-control" />
-	</div>
-	<div class="row">
-		<div class="form-group col-sm-5">
-			<label for="nombre">Nombre del propietario:</label>
-			<input id = "nombre" type = "text" ng-model = "persona.nombre" placeholder = "nombre" class="form-control" />
-		</div>
-		<div class="form-group col-sm-7">
-			<label for="apellido_paterno">Apellido paterno:</label>
-			<input id = "apellido_paterno" type = "text" ng-model = "persona.apellido_paterno" placeholder = "apellido paterno" class="form-control" />
-		</div>
-	</div>		
-	<div class="row">
-		<div class="form-group col-sm-5">
-			<label for="apellido_materno">Apellido materno:</label>
-			<input id = "apellido_materno" type = "text" ng-model = "persona.apellido_materno" placeholder = "apellido materno" class="form-control" />
-		</div>
-		<div class="form-group col-sm-7">
-			<label for="telefono">Telefono:</label>
-			<input id = "telefono" type = "text" ng-model = "persona.telefono" placeholder = "numero de telefono" class="form-control"/>
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label for="correo">Correo electrónico:</label>
-		<input id = "correo" type = "email" ng-model = "persona.correo" placeholder = "correo electronico" class="form-control" required />
-	</div>
-	<div class="form-group" style="text-align:right">
-		<button class="btn btn-info"  ng-click = "activar()"> Activar </button>
-	</div>
-</div>
+
+<h1> Alta de monedero electronico </h1>
+
+<label for="id_monedero">id monedero:</label>
+
+<input id = "id_monedero" type = "text" ng-model = "persona.id_monedero" placeholder = "id_monedero" /><br>
+
+<label for="nombre">Nombre del propietario:</label>
+
+<input id = "nombre" type = "text" ng-model = "persona.nombre" placeholder = "nombre" /><br>
+
+<label for="apellido_paterno">Apellido paterno:</label>
+
+<input id = "apellido_paterno" type = "text" ng-model = "persona.apellido_paterno" placeholder = "apellido paterno" /><br>
+
+<label for="apellido_materno">Apellido materno:</label>
+
+<input id = "apellido_materno" type = "text" ng-model = "persona.apellido_materno" placeholder = "apellido materno" /><br>
+
+<label for="telefono">Telefono:</label>
+
+<input id = "telefono" type = "text" ng-model = "persona.telefono" placeholder = "apellido materno" /><br>
+
+<label for="correo">Correo electrónico:</label>
+
+<input id = "correo" type = "text" ng-model = "persona.correo" placeholder = "apellido materno" /><br>
+
+<label for="fecha">Fecha de nacimiento:</label>
+
+<input id = "fecha" type = "text" ng-model = "persona.fecha_nacimiento" placeholder = "fecha de nacimiento" /><br>
+
+<button ng-click = "activar()"> Activar </button>
+
+<p class="text-error" ng-if = "message_error">{{message_error}}</p>
+<p class="text-success" ng-if = "message_ok">{{message_ok}}</p>
