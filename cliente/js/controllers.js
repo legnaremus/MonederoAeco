@@ -495,6 +495,7 @@ app.controller('menuCtrl',function($scope,$location,servidor,token,$window,$time
 	      {path: '/sucursales', title: 'Sucursales'},
 	      {path: '/promociones', title: 'Promociones'},
 	      {path: '/configuraciones', title: 'Configuraciones'},
+	      {path: '/', title: 'Salir'},
 	    ];
 
 	$scope.$watch('location',function(){

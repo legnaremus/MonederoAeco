@@ -1,67 +1,69 @@
-
-<h1> Sucursales </h1>
-
+<div class="jumbotron">
+	<h1> Sucursales </h1>
+</div>
 <div ng-hide = "sucursal_editando_status">
-	<label for="id_sucursal">Id de sucursal:</label>
-
-	<input id = "id_sucursal" type = "text" ng-model = "sucursal.id_sucursal" placeholder = "id de sucursal" /><br>
-
-	<label for="nombre">Nombre de sucursal:</label>
-
-	<input id = "nombre" type = "text" ng-model = "sucursal.nombre" placeholder = "nombre de sucursal" /><br>
-
-	<label for="direccion">Dirección de sucursal:</label>
-
-	<input id = "direccion" type = "text" ng-model = "sucursal.direccion" placeholder = "Dirección de la sucursal" /><br>
-
-	<label for="contrasenia">Contraseña actual:</label>
-
-	<input id = "contrasenia" type = "text" ng-model = "sucursal.contrasenia" placeholder = "Contraseña actual" /><br>
-
-	<button ng-click = "agrega()"> Agregar sucursal </button>
+	<div class="row">
+		<form class="form text-center col-sm-6 col-sm-offset-3">
+			<div class="form-group">
+				<label  for="id_sucursal">Id de sucursal:</label>
+				<input class="form-control" id = "id_sucursal" type = "text" ng-model = "sucursal.id_sucursal" placeholder = "id de sucursal" />
+			</div>
+			<div class="form-group">
+				<label for="nombre">Nombre de sucursal:</label>
+				<input class="form-control" id = "nombre" type = "text" ng-model = "sucursal.nombre" placeholder = "nombre de sucursal" />
+			</div>
+			<div class="form-group">
+				<label for="direccion">Dirección de sucursal:</label>
+				<input class="form-control" id = "direccion" type = "text" ng-model = "sucursal.direccion" placeholder = "Dirección de la sucursal" />
+			</div>
+			<div class="form-group">
+				<label for="contrasenia">Contraseña actual:</label>
+				<input class="form-control" id = "contrasenia" type = "text" ng-model = "sucursal.contrasenia" placeholder = "Contraseña actual" />
+			</div>
+			<button class="btn btn-success" ng-click = "agrega()"> Agregar sucursal </button>
+		</form>
+	</div>	
 </div>
-
+<br>
 <div ng-show = "sucursal_editando_status">
-
-
-	<label for="nombre">Nombre de sucursal:</label>
-
-	<input id = "nombre" type = "text" ng-model = "sucursal_editando.nombre_sucursal" placeholder = "nombre de sucursal" /><br>
-
-	<label for="direccion">Dirección de sucursal:</label>
-
-	<input id = "direccion" type = "text" ng-model = "sucursal_editando.direccion" placeholder = "Dirección de la sucursal" /><br>
-
-	<label for="contrasenia">Contraseña actual:</label>
-
-	<input id = "contrasenia" type = "text" ng-model = "contrasenia" placeholder = "Contraseña actual" /><br>
-
-	<button ng-click = "guardar_cambios()"> Guardar cambios </button>
-	<button ng-click = "eliminar_sucursal()"> Eliminar sucursal</button>
-	<button ng-click = "cancelar()"> Cancelar </button>
-
-
+	<div class="row">
+		<form class="form text-center col-sm-6 col-sm-offset-3">
+			<div class="form-group">
+				<label for="nombre">Nombre de sucursal:</label>
+				<input class="form-control" id = "nombre" type = "text" ng-model = "sucursal_editando.nombre_sucursal" placeholder = "nombre de sucursal" />
+			</div>
+			<div class="form-group">
+				<label for="direccion">Dirección de sucursal:</label>
+				<input class="form-control" id = "direccion" type = "text" ng-model = "sucursal_editando.direccion" placeholder = "Dirección de la sucursal" />
+			</div>
+			<div class="form-group">
+				<label for="contrasenia">Contraseña actual:</label>
+				<input class="form-control" id = "contrasenia" type = "text" ng-model = "contrasenia" placeholder = "Contraseña actual" />
+			</div>
+			<button class="btn btn-success" ng-click = "guardar_cambios()"> Guardar cambios </button>
+			<button class="btn btn-danger" ng-click = "eliminar_sucursal()"> Eliminar sucursal</button>
+			<button class="btn btn-warning" ng-click = "cancelar()"> Cancelar </button>
+		</form>
+	</div>	
 </div>
-
+<br>
 <p class="text-error" ng-show = "message_error">{{message_error}}</p>
 <p class="text-success" ng-if = "message_ok">{{message_ok}}</p>
-
-<table class="table table-condensed">
- 
-	<thead>
-		<tr>
-		<th scope="col">Id</th>
-	 	<th scope="col">Nombre</th>
-		<th scope="col">Direccion</th>
-	   </tr>
-	</thead>
-
-	<tbody>
-	   <tr ng-repeat = "sucursal in sucursales track by $index" ng-click = "click_sucursal($index)">
-				<td >{{sucursal.id_sucursal}}</td>
-		     	<td>{{sucursal.nombre_sucursal}}</td>
-				<td>{{sucursal.direccion}}</td>
-	   </tr>
-	</tbody>
-
-</table>
+<div class="table-responsive col-sm-10 col-sm-offset-1">
+	<table class="table table-condensed">
+		<thead>
+			<tr>
+			<th scope="col">Id</th>
+		 	<th scope="col">Nombre</th>
+			<th scope="col">Direccion</th>
+		   </tr>
+		</thead>
+		<tbody>
+		   <tr ng-repeat = "sucursal in sucursales track by $index" ng-click = "click_sucursal($index)">
+					<td >{{sucursal.id_sucursal}}</td>
+			     	<td>{{sucursal.nombre_sucursal}}</td>
+					<td>{{sucursal.direccion}}</td>
+		   </tr>
+		</tbody>
+	</table>
+</div>

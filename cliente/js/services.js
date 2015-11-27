@@ -16,7 +16,7 @@ app.service("token",function($window){
 app.service("servidor",function($http,token) {
 	var servicio = this;
 	
-	servicio.servidor = "http://myhostname:8080";
+	servicio.servidor = "http://localhost:8080";
 
 	servicio.elimina_promocion = function(id_promocion,password,f){
 		$http({
