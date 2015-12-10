@@ -1,24 +1,38 @@
+
+
 <div class="jumbotron">
 	<h1> Sucursales </h1>
 </div>
+
+<div ng-if = "message_error" class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <p class="text-center">{{message_error}}</p>
+</div>
+<div ng-if = "message_ok" class="alert alert-success alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <p class="text-center" >{{message_ok}}</p>
+</div>
+
 <div ng-hide = "sucursal_editando_status">
 	<div class="row">
-		<form class="form text-center col-sm-6 col-sm-offset-3">
+		<form autocomplete="false" class="form text-center col-sm-6 col-sm-offset-3">
 			<div class="form-group">
 				<label  for="id_sucursal">Id de sucursal:</label>
-				<input class="form-control" id = "id_sucursal" type = "text" ng-model = "sucursal.id_sucursal" placeholder = "id de sucursal" />
+				<input autofocus required class="form-control" id = "id_sucursal" type = "text" ng-model = "sucursal.id_sucursal" placeholder = "id de sucursal" />
 			</div>
 			<div class="form-group">
 				<label for="nombre">Nombre de sucursal:</label>
-				<input class="form-control" id = "nombre" type = "text" ng-model = "sucursal.nombre" placeholder = "nombre de sucursal" />
+				<input required class="form-control" id = "nombre" type = "text" ng-model = "sucursal.nombre" placeholder = "nombre de sucursal" />
 			</div>
+			<input style="display:none" type="text" name="fakeusernameremembered"/>
 			<div class="form-group">
 				<label for="direccion">Dirección de sucursal:</label>
-				<input class="form-control" id = "direccion" type = "text" ng-model = "sucursal.direccion" placeholder = "Dirección de la sucursal" />
+				<input required class="form-control" id = "direccion" type = "text" ng-model = "sucursal.direccion" placeholder = "Dirección de la sucursal" />
 			</div>
+			<input style="display:none" type="number" name="fakepasswordremembered"/>
 			<div class="form-group">
 				<label for="contrasenia">Contraseña actual:</label>
-				<input class="form-control" id = "contrasenia" type = "text" ng-model = "sucursal.contrasenia" placeholder = "Contraseña actual" />
+				<input required class="form-control" id = "contrasenia" type = "password" ng-model = "sucursal.contrasenia" placeholder = "Contraseña actual" />
 			</div>
 			<button class="btn btn-success" ng-click = "agrega()"> Agregar sucursal </button>
 		</form>
@@ -30,15 +44,15 @@
 		<form class="form text-center col-sm-6 col-sm-offset-3">
 			<div class="form-group">
 				<label for="nombre">Nombre de sucursal:</label>
-				<input class="form-control" id = "nombre" type = "text" ng-model = "sucursal_editando.nombre_sucursal" placeholder = "nombre de sucursal" />
+				<input required class="form-control" id = "nombre" type = "text" ng-model = "sucursal_editando.nombre_sucursal" placeholder = "nombre de sucursal" />
 			</div>
 			<div class="form-group">
 				<label for="direccion">Dirección de sucursal:</label>
-				<input class="form-control" id = "direccion" type = "text" ng-model = "sucursal_editando.direccion" placeholder = "Dirección de la sucursal" />
+				<input required class="form-control" id = "direccion" type = "text" ng-model = "sucursal_editando.direccion" placeholder = "Dirección de la sucursal" />
 			</div>
 			<div class="form-group">
 				<label for="contrasenia">Contraseña actual:</label>
-				<input class="form-control" id = "contrasenia" type = "text" ng-model = "contrasenia" placeholder = "Contraseña actual" />
+				<input required class="form-control" id = "contrasenia" type = "password" ng-model = "contrasenia" placeholder = "Contraseña actual" />
 			</div>
 			<button class="btn btn-success" ng-click = "guardar_cambios()"> Guardar cambios </button>
 			<button class="btn btn-danger" ng-click = "eliminar_sucursal()"> Eliminar sucursal</button>
@@ -47,8 +61,7 @@
 	</div>	
 </div>
 <br>
-<p class="text-error" ng-show = "message_error">{{message_error}}</p>
-<p class="text-success" ng-if = "message_ok">{{message_ok}}</p>
+
 <div class="table-responsive col-sm-10 col-sm-offset-1">
 	<table class="table table-condensed">
 		<thead>

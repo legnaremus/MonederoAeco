@@ -1,28 +1,39 @@
+
 <div class="jumbotron">
 	<h1> Usuarios </h1>
 </div>
+
+<div ng-if = "message_error" class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <p class="text-center">{{message_error}}</p>
+</div>
+<div ng-if = "message_ok" class="alert alert-success alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <p class="text-center" >{{message_ok}}</p>
+</div>
+
 <div ng-hide = "muestra_info_ok">
 	<div class="row">
 		<form class="form text-center col-sm-6 col-sm-offset-3">
 			<div class="form-group">
 				<label for="nombre">Nombre del usuario:</label>
-				<input class="form-control" id = "nombre" type = "text" ng-model = "persona.nombre" placeholder = "nombre" />
+				<input required class="form-control" id = "nombre" type = "text" ng-model = "persona.nombre" placeholder = "nombre" />
 			</div>
 			<div class="form-group">
 				<label for="apellido">Apellido del usuario:</label>
-				<input class="form-control" id = "apellido" type = "text" ng-model = "persona.apellido" placeholder = "apellido" />
+				<input required class="form-control" id = "apellido" type = "text" ng-model = "persona.apellido" placeholder = "apellido" />
 			</div>
 			<div class="form-group">
-				<label for="contrasenia">Contrasenia del usuario:</label>
-				<input class="form-control" id = "contrasenia" type = "text" ng-model = "persona.password" placeholder = "Contraseña del usuario" />
+				<label for="contrasenia">Contraseña del usuario:</label>
+				<input required class="form-control" id = "contrasenia" type = "password" ng-model = "persona.password" placeholder = "Contraseña del usuario" />
 			</div>
 			<div class="form-group">
 				<label for="verifica">Verifica la contraseña:</label>
-				<input class="form-control" id = "verifica" type = "text" ng-model = "persona.verifica" placeholder = "Verifica la contraseña" />
+				<input  required class="form-control" id = "verifica" type = "password" ng-model = "persona.verifica" placeholder = "Verifica la contraseña" />
 			</div>
 			<div class="form-group">
 				<label for="contrasenia_usuario">Contrasenia de usuario actual:</label>
-				<input class="form-control" id = "contrasenia_usuario" type = "text" ng-model = "contrasenia_usuario" placeholder = "Contraseña del usuario" />
+				<input  required class="form-control" id = "contrasenia_usuario" type = "password" ng-model = "contrasenia_usuario" placeholder = "Contraseña del usuario" />
 			</div>
 			<button class="btn btn-success" ng-click = "registrar_usuario()"> Registrar usuario </button>
 		</form>
@@ -34,19 +45,19 @@
 		<form class="form text-center col-sm-6 col-sm-offset-3">
 			<div class="form-group">
 				<label for="nombre">Nombre del usuario:</label>
-				<input class="form-control" id = "nombre" type = "text" ng-model = "usuario_editando.nombre" placeholder = "nombre" />
+				<input required class="form-control" id = "nombre" type = "text" ng-model = "usuario_editando.nombre" placeholder = "nombre" />
 			</div>
 			<div class="form-group">
 				<label for="apellido">Apellido del usuario:</label>
-				<input class="form-control" id = "apellido" type = "text" ng-model = "usuario_editando.apellido_pat" placeholder = "apellido" />
+				<input required class="form-control" id = "apellido" type = "text" ng-model = "usuario_editando.apellido_pat" placeholder = "apellido" />
 			</div>
 			<div class="form-group">
-				<label for="contrasenia">Contrasenia del usuario:</label>
-				<input class="form-control" id = "contrasenia" type = "text" ng-model = "usuario_editando.password" placeholder = "Contraseña del usuario" />
+				<label for="contrasenia">Contraseña del usuario:</label>
+				<input required class="form-control" id = "contrasenia" type = "password" ng-model = "usuario_editando.password" placeholder = "Contraseña del usuario" />
 			</div>
 			<div class="form-group">
-				<label for="contrasenia_usuario">Contrasenia de usuario actual:</label>
-				<input class="form-control" id = "contrasenia_usuario" type = "text" ng-model = "contrasenia_usuario" placeholder = "Contraseña del usuario" />	
+				<label for="contrasenia_usuario">Contraseña de usuario actual:</label>
+				<input required class="form-control" id = "contrasenia_usuario" type = "password" ng-model = "contrasenia_usuario" placeholder = "Contraseña del usuario" />	
 			</div>	
 			<button class="btn btn-success" ng-click = "guardar_cambios()"> Guardar cambios </button>
 			<button class="btn btn-danger" ng-click = "eliminar_usuario()"> Eliminar usuario </button>
@@ -54,15 +65,7 @@
 		</form>
 	</div>
 </div>
-
-
 <br>
-
-<p class="text-error" ng-if = "message_error">{{message_error}}</p>
-<p class="text-success" ng-if = "message_ok">{{message_ok}}</p>
-
-<br>
-
 <div class="table-responsive col-sm-10 col-sm-offset-1">
 	<table class="table table-condensed">
 		<thead>

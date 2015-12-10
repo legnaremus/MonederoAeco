@@ -1,21 +1,28 @@
-
 <div class="jumbotron">
-	<h1> Desabilitar monedero </h1>
+	<h1> Deshabilitar monedero </h1>
+</div>
+
+<div ng-if = "message_error" class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <p class="text-center">{{message_error}}</p>
+</div>
+<div ng-if = "message_ok" class="alert alert-success alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <p class="text-center" >{{message_ok}}</p>
 </div>
 <div class="row">
 	<form action="" class="form form-horizontal col-sm-4 col-sm-offset-4 text-center">
+		<input style="display:none" type="text" name="fakeusernameremembered"/>
+		<input style="display:none" type="password" name="fakepasswordremembered"/>
 		<div class="form-group">
 			<label for="id_monedero">Id del monedero: </label>
-			<input class="form-control" id = "id_monedero" type = "text" ng-model = "id_monedero" placeholder = "id_monedero" />
+			<input autofocus required class="form-control" id = "id_monedero" type = "text" ng-model = "id_monedero" placeholder = "id_monedero" />
 		</div>
 		<div class="form-group">
 			<label for="contrasenia">Contraseña: </label>
-			<input class="form-control" id = "contrasenia" type = "text" ng-model = "contrasenia" placeholder = "contrasenia" />
+			<input required class="form-control" id = "contrasenia" type = "password" ng-model = "contrasenia" placeholder = "contrasenia" />
 		</div>
-		<button ng-click = "desactivar()">Desactivar </button>
+		<button class="btn btn-danger" ng-click = "desactivar()">Desactivar </button>
 		</div>
 	</form>
 </div>			
-
-<p class="text-error" ng-if = "message_error">{{message_error}}</p>
-<p class="text-success" ng-if = "message_ok">{{message_ok}}</p>
